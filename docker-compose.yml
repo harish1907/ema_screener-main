@@ -1,0 +1,77 @@
+version: '3.12.1'
+
+networks:
+  ema_net:
+    driver: bridge
+    
+volumes:
+  ema_redis_data:
+    driver: local
+
+services:
+  emaredis:
+    image: redis:7.0.6
+    container_name: ema-redis
+    volumes:
+      - ema_redis_data:/data
+    ports:
+      - "6379"
+    networks:
+      - ema_net
+  makemigrations:
+    build:
+      context: .
+    volumes:
+      - .:/django
+    env_file:
+      - path: .env
+        required: true
+    command: python manage.py makemigrations --noinput
+    networks:
+      - ema_net
+
+  migration:
+    build:
+      context: .
+    volumes:
+      - .:/django
+    env_file:
+      - path: .env
+        required: true
+    command: python manage.py migrate --noinput
+    depends_on:
+      - makemigrations
+    networks:
+      - ema_net
+
+  collectstatic:
+    build:
+      context: .
+    volumes:
+      - .:/django
+    env_file:
+      - path: .env
+        required: true
+    command: python manage.py collectstatic --noinput
+    depends_on:
+      - migration
+    networks:
+      - ema_net
+
+  ema_app:
+    build: .
+    volumes:
+      - .:/django
+    env_file:
+      - path: .env
+        required: true
+    ports:
+      - 8002:8000
+    image: ema-screener:django
+    container_name: ema-screener
+    command: python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - collectstatic
+      - emaredis
+    networks:
+      - ema_net
