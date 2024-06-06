@@ -19,8 +19,8 @@ WATCH_VALUE_QUERY_FILTERS = {
     "B": {
         "twenty_greater_than_fifty": True,
         "fifty_greater_than_hundred": True,
-        "hundred_greater_than_twohundred": True,
-        "close_greater_than_hundred": False,
+        "hundred_greater_than_twohundred": False,
+        "close_greater_than_hundred": True,
     },
     # STRONG BUY
     "C": {
@@ -40,8 +40,8 @@ WATCH_VALUE_QUERY_FILTERS = {
     "E": {
         "twenty_greater_than_fifty": False,
         "fifty_greater_than_hundred": False,
-        "hundred_greater_than_twohundred": False,
-        "close_greater_than_hundred": True,
+        "hundred_greater_than_twohundred": True,
+        "close_greater_than_hundred": False,
     },
     # STRONG DOWN
     "F": {
